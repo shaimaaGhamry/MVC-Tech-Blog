@@ -1,0 +1,33 @@
+<div>
+    <h1>Welcome {{userPosts.0.user.name}},</h1>
+    
+    {{#each userPosts as |userPost|}}
+    <div class="post_card">
+     <header><a href="#" onClick="displayEditDeleteDiv({{userPost.id}})">{{userPost.post_title}}</a></header>
+     <div><header >on: {{format_date userPost.date_created}}</header></div>
+     
+     <div>{{userPost.post_content}}</div>
+     
+    </div>
+
+    <div id="edit_delete_div{{userPost.id}}" style="display:none;">
+        <a href="#" onclick="handleEditPost({{userPost.id}})" style="margin: 10px;">Edit</a>
+       
+        <a href="#" onclick="deletePost({{userPost.id}})"  style="margin: 10px;">Delete</a>
+
+         <div id="edit_form_div{{userPost.id}}" style="display:none;">
+            <form id="edit_form_id{{userPost.id}}">
+                <input id="edit_title_id" value="{{userPost.post_title}}">
+                <input id="edit_content_id" value="{{userPost.post_content}}">
+                <button onclick="handleEditAction({{userPost.id}})">Save</button>
+                <button onclick="handleCancelEdit({{userPost.id}})">Cancel</button>
+            </form>
+        </div>
+    </div>
+    {{/each}}
+          
+        <button id="create_post_btn"><a href="/dashboard/newPost">Create New Post</a></button>
+    
+    <script src="/js/editPost.js"></script>
+    <script src="/js/deletePost.js"></script>
+</div>

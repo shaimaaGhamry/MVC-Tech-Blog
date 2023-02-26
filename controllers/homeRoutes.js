@@ -4,7 +4,6 @@ const withAuth = require('../utils/auth');
 
 router.get('/', async (req, res) => {
   try {
-    console.log("inside homeroute /");
     const postData = await Post.findAll({
       include: [
         {
@@ -14,10 +13,8 @@ router.get('/', async (req, res) => {
       ],
     });
 
-    console.log(postData);
     // Serialize data so the template can read it
     const posts = postData.map((post) => post.get({ plain: true }));
-console.log(posts);
     // Pass serialized data and session flag into template
     res.render('homepage', { 
       posts, 
@@ -28,6 +25,30 @@ console.log(posts);
   }
 });
 
+router.get('/postDetails/:post_id', withAuth, async(req,res)=>{
+  console.log("Get post details for post: " + req.params.post_id);
+
+  try{
+
+      const postData = await Post.findByPk(req.params.post_id);
+      const postCommentsData = await Comment.findAll({
+        where:{post_id:req.params.post_id},
+        include:[{model:User}]
+      });
+
+      const post = postData.get({plain:true});
+      const postComments = postCommentsData.map(item => item.get({plain:true}));
+      console.log(post);
+      console.log(postComments);
+
+      res.render('postDetails', {post, postComments, logged_in:true});
+  }catch(err){
+    console.log(err);
+    res.status(500).json(err);
+  }
+  
+
+});
 router.get('/project/:id', async (req, res) => {
   try {
     const projectData = await Project.findByPk(req.params.id, {
@@ -51,21 +72,23 @@ router.get('/project/:id', async (req, res) => {
 });
 
 // Use withAuth middleware to prevent access to route
-router.get('/profile', withAuth, async (req, res) => {
+router.get('/dashboard', withAuth, async (req, res) => {
   try {
     // Find the logged in user based on the session ID
-    const userData = await User.findByPk(req.session.user_id, {
-      attributes: { exclude: ['password'] },
-      include: [{ model: Project }],
+    console.log("The user is : " + req.session.user_id);
+    const userPostsData = await Post.findAll({
+      where: {user_id:req.session.user_id},
+      include: [{ model: User , } ]     
     });
 
-    const user = userData.get({ plain: true });
-console.log(user);
-    res.render('profile', {
-      ...user,
+    const userPosts = userPostsData.map(userPost => userPost.get({ plain: true }));
+console.log(userPosts);
+    res.render('dashboard', {
+      userPosts,
       logged_in: true
     });
   } catch (err) {
+    console.log(err);
     res.status(500).json(err);
   }
 });

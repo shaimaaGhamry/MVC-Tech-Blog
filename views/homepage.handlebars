@@ -2,8 +2,12 @@
 {{#each posts as |post| }}
 <div class="posts_container">
   <div class="post_card">
-    <header>{{post.post_title}}</header>
+    <header>
+      <a href="/postDetails/{{post.id}}">{{post.post_title}}</a>
+      <div>By: {{post.user.name}}  - on: {{format_date post.date_created}}</div>
+    </header>
     <div>{{post.post_content}}</div>
+    
   </div>
 </div>
 {{/each}}

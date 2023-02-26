@@ -1,0 +1,29 @@
+<div>
+   
+        <div class="post_card">
+            <header>{{post.post_title}}</a></header>
+            <div>{{post.post_content}}</div>
+            <div>By: {{post.user.name}}  - on: {{format_date post.date_created}}</div>
+        </div>
+    
+    <div >
+        <span>Add a comment:</span>
+        <form id="add_comment_form">
+            <textarea id="new_comment_textarea"></textarea>
+            <button type="submit">Add Comment</button>
+        </form>
+
+    </div>
+
+<span>Comments:</span>
+    {{#each postComments as |comment|}}
+        <div class="post_card">
+            <header>{{comment.comment_text}}</a></header>
+            <div>{{comment.user.name}}</div>
+            
+        </div>
+    
+    {{/each}}
+</div>
+
+<script src="/js/addComment.js"></script>
